@@ -1,0 +1,21 @@
+<div class="span8 offset2">
+	<h2>@<%= session[:username] %></h2>
+
+	<table class="table table-bordered">
+		<thead>
+			<tr>
+				<th>From</th>
+				<th>Message</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			<% for mention in Twitter.mentions %>
+				<tr>
+					<td><%= mention.user.screen_name %></td>
+					<td><%= mention.text %></td>
+				</tr>
+			<% end %>
+		</tbody>
+	</table>
+</div>

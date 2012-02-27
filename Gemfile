@@ -1,7 +1,16 @@
 source :rubygems
 
-gem 'twitter'
 gem 'minitest'
+gem 'turn'
+
 gem 'sinatra'
 gem 'shotgun'
-gem 'twitter_oauth'
+
+gem 'twitter'
+
+gem 'omniauth'
+gem 'omniauth-twitter'
+
+gem 'data_mapper'
+gem 'dm-mysql-adapter'
+gem 'dm-postgres-adapter'
