@@ -2,6 +2,7 @@ source :rubygems
 
 gem 'minitest'
 gem 'turn'
+gem 'mocha'
 
 gem 'sinatra'
 gem 'shotgun'
