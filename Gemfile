@@ -1,4 +1,7 @@
+source :rubygems
+
 gem 'twitter'
 gem 'minitest'
 gem 'sinatra'
-gem 'sinatra-twitter-oauth'
+gem 'shotgun'
+gem 'twitter_oauth'
