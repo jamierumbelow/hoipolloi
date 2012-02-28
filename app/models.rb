@@ -11,11 +11,21 @@ class Conversation < ActiveRecord::Base
   has_many :tweets
 
   def from_names(current_user)
-    tweets.where("tweets.from_name != '#{current_user}'").map(&:from_name).uniq.to_sentence
+    get_from_names(current_user).to_sentence
+  end
+
+  def from_names_at(current_user)
+    get_from_names(current_user).map { |n| "@#{n}" }.join(' ')
   end
 
   def snippet
     tweets.order('tweeted_at DESC').first.text
+  end
+
+  private
+
+  def get_from_names(current_user)
+    tweets.where("tweets.from_name != '#{current_user}'").map(&:from_name).uniq
   end
 end
 

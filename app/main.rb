@@ -68,9 +68,10 @@ module HoiPolloi
     get '/conversations' do
       @conversations = Conversation.find_by_sql "SELECT conversations.*
                                                  FROM conversations
-                                                 JOIN tweets ON tweets.conversation_id = conversations.id 
+                                                 JOIN tweets ON tweets.conversation_id = conversations.id
                                                  GROUP BY conversations.id
-                                                 HAVING COUNT(tweets.id) > 1"
+                                                 HAVING COUNT(tweets.id) > 1
+                                                 ORDER BY tweets.tweeted_at DESC"
 
       erb :'conversations/index'
     end
@@ -80,6 +81,15 @@ module HoiPolloi
       @conversation.update_attributes :read => true
 
       erb :'conversations/show'
+    end
+
+    post '/conversations/:id/reply' do |id|
+      @conversation = Conversation.find id
+
+      tweet = Twitter.update params[:reply], :in_reply_to_status_id => @conversation.tweets.order('tweeted_at DESC').first.tweet_id
+      @conversation.tweets.create :text => tweet.text, :tweet_id => tweet.id, :user => @current_user, :from_name => @current_user.nickname, :tweeted_at => tweet.created_at
+
+      redirect "/conversations/#{id}"
     end
 
     # Go and rape Twitter for the user's latest tweets,
