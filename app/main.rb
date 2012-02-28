@@ -40,11 +40,10 @@ module HoiPolloi
       session[:access_token_secret] = auth['credentials']['secret']
       session[:username] = auth['info']['nickname']
 
-      user = User.first_or_create({ :uid => auth["uid"] },
-                                  { :uid => auth["uid"],
-                                    :nickname => auth["info"]["nickname"], 
-                                    :name => auth["info"]["name"],
-                                    :created_at => Time.now })
+      user = User.find_or_create_by_uid :uid => auth["uid"],
+                                        :nickname => auth["info"]["nickname"], 
+                                        :name => auth["info"]["name"],
+                                        :created_at => Time.now
       session[:user_id] = user.id
 
       redirect '/'
@@ -73,24 +72,23 @@ module HoiPolloi
     post '/rape' do
       
       # First, we grab the current user from the session
-      @current_user = User.get session[:user_id]
-      p @current_user.tweets.length
+      @current_user = User.find session[:user_id]
+
       # Next up, we're going to grab the user's recent tweets and import them into
       # the database. We're doing this so that we can create conversations around them.
-      if current_user.tweets.length > 0
-        p "DON'T GET TWEETS SINCE #{current_user.tweets.last.tweet_id}"
-        my_tweets = Twitter.user_timeline :count => 200, :since_id => current_user.tweets.last.tweet_id
+      if current_user.tweets.count > 0
+        my_tweets = Twitter.user_timeline :count => 200, :since_id => current_user.tweets.order('tweeted_at DESC').first.tweet_id
       else
         my_tweets = Twitter.user_timeline :count => 200
       end
-      
+
       # We now want to loop through our tweets and bring them into the database.
       import_into_database my_tweets
 
       # Now, let's do the same sort of thing for our mentions!
-      current_tweet = current_user.tweets( :order => [ :tweeted_at.desc ], :limit => 1 ).last || false
+      current_tweet = current_user.tweets.order('tweeted_at DESC').first
 
-      if current_tweet
+      if current_tweet.nil?
         mentions = Twitter.mentions :count => 200, :since_id => current_tweet.tweet_id
       else
         mentions = Twitter.mentions :count => 200
@@ -124,18 +122,20 @@ module HoiPolloi
           # the reams and reams of Dan Brown novels. But alas, my hands are tied.
           #
           # conversation = Conversation.first :limit => 1, :tweets => { :tweet_id => tweet.in_reply_to_status_id }
-          conversation_tweets = Tweet.first :tweet_id => tweet.in_reply_to_status_id
+          conversation_tweet = Tweet.find_by_tweet_id(tweet.in_reply_to_status_id, :include => [ :conversation ])
           
-          # If we have any existing tweets, we have a conversation!
-          unless conversation_tweets.nil?
-            conversation = conversation_tweets.conversation
-            conversation.update! :read => 0
+          unless conversation_tweet.nil?
 
-          # Otherwise, we need to create a new conversation
+            # If we have any existing tweets, we have a conversation!
+            conversation = conversation_tweet.conversation
+            conversation.update_attributes :read => 0
           else
+
+            # Otherwise, we need to create a new conversation
             conversation = Conversation.create! :read => 0, :user => current_user
           end
         else
+
           conversation = Conversation.create! :read => 0, :user => current_user
         end
         
