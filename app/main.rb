@@ -14,6 +14,9 @@ module HoiPolloi
   class App < Sinatra::Base
     attr_accessor :current_user
 
+    ## --------------------------------------------------------------
+    ## Essential Sinatra setup
+
     set :root, Proc.new { File.expand_path File.join(File.dirname(__FILE__), '../') }
     set :views, Proc.new { File.join root, 'app/views' }
 
@@ -21,6 +24,9 @@ module HoiPolloi
     use OmniAuth::Builder do
       provider :twitter, HoiPolloi.configuration[:consumer_key], HoiPolloi.configuration[:consumer_secret]
     end
+
+    ## --------------------------------------------------------------
+    ## Authentication
 
     before do
       unless session[:user_id].nil?
@@ -57,6 +63,9 @@ module HoiPolloi
       redirect '/'
     end
 
+    ## --------------------------------------------------------------
+    ## Misc.
+
     get '/' do
       if session[:user_id].nil?
         erb :index
@@ -64,6 +73,9 @@ module HoiPolloi
         redirect url('/conversations')
       end
     end
+
+    ## --------------------------------------------------------------
+    ## Conversations
 
     get '/conversations' do
       @conversations = Conversation.recent_conversations 10, @current_user.nickname
@@ -96,6 +108,9 @@ module HoiPolloi
 
       redirect "/conversations/#{id}"
     end
+
+    ## --------------------------------------------------------------
+    ## Tweet raping!
 
     # Go and rape Twitter for the user's latest tweets,
     # and return a lovely HTML snippet for us
