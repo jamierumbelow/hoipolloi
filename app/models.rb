@@ -46,7 +46,7 @@ class Conversation < ActiveRecord::Base
 
   def output_text
     Conversation::EMOJI.each do |emoji|
-      text.gsub! "\u#{emoji}", "<i class='emoji emoji_#{emoji}'></i>"
+      text.gsub! "\u" + emoji, "<i class='emoji emoji_#{emoji}'></i>"
     end
     
     text
