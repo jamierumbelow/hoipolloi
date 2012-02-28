@@ -1,23 +1,34 @@
 <div class="span8 offset2">
-	<p>Conversation with <%= @conversation.from_names(@current_user.nickname) %></p>
+	<h3 id="conversation_tagline">Conversation with <%= @conversation.from_names(@current_user.nickname) %></h3>
 
 	<div id="tweets">
 		<div class="new-tweet">
 			<form action="<%= url "/conversations/#{@conversation.id}/reply" %>" method="post">
-				<p>
-					<textarea name="reply"><%= @conversation.from_names_at(@current_user.nickname) %></textarea>
+				<p class="triangle-border right">
+					<textarea name="reply"><%= @conversation.from_names_at(@current_user.nickname) %> </textarea>
 				</p>
-				<p>
-					<input type="submit" value="reply" class="btn btn-primary" />
+				<p class="author me">
+					<img src="http://www.educatorlife.com/mathteacherlife/wp-content/themes/StandardTheme_20/uploads/default_gravatar.jpg" width="75" height="75" />
+					<strong>@<%= @current_user.nickname %></strong>
+				</p>
+
+				<p class="buttons">
+					<input type="submit" value="Reply" class="btn" />
 				</p>
 			</form>
 		</div>
 
 		<% for tweet in @conversation.tweets.order('tweeted_at DESC') %>
 			<div class="tweet">
-				<p><strong>@<%= tweet.from_name %>:</strong></p>
-				<p><%= tweet.text %></p>
+				<p class="author <% if tweet.from_name == @current_user.nickname %>me<% else %>them<% end %>">
+					<img src="http://www.educatorlife.com/mathteacherlife/wp-content/themes/StandardTheme_20/uploads/default_gravatar.jpg" width="75" height="75" />
+					<strong>@<%= tweet.from_name %></strong>
+				</p>
+
+				<p class="text triangle-border <% if tweet.from_name == @current_user.nickname %>right<% else %>left<% end %>"><%= tweet.text %></p>
 			</div>
 		<% end %>
 	</div>
 </div>
+
+<link rel="stylesheet" type="text/css" href="/stylesheets/speechbubbles.css" />
