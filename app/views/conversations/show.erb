@@ -1,0 +1,12 @@
+<div class="span8 offset2">
+	<p>Conversation with <%= @conversation.from_names(@current_user) %></p>
+
+	<div id="tweets">
+		<% for tweet in @conversation.tweets.order('tweeted_at DESC') %>
+			<div class="tweet">
+				<p><strong>@<%= tweet.from_name %>:</strong></p>
+				<p><%= tweet.text %></p>
+			</div>
+		<% end %>
+	</div>
+</div>

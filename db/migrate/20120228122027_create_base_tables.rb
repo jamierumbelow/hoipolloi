@@ -15,7 +15,7 @@ class CreateBaseTables < ActiveRecord::Migration
       t.timestamps
     end
 
-    add_index(:conversations, :user_id)
+    add_index :conversations, :user_id
 
     create_table :tweets do |t|
       t.integer :user_id
@@ -29,7 +29,8 @@ class CreateBaseTables < ActiveRecord::Migration
       t.timestamps
     end
 
-    add_index(:tweets, :user_id)
-    add_index(:tweets, :conversation_id)
+    add_index :tweets, :user_id
+    add_index :tweets, :tweet_id, :unique => true
+    add_index :tweets, :conversation_id
   end
 end

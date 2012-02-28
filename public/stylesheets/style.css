@@ -1,1 +1,1 @@
-/*#conversations-table { display: none; }*/
+#conversations .unread td { font-weight: bold; }

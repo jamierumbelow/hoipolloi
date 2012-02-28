@@ -75,6 +75,13 @@ module HoiPolloi
       erb :'conversations/index'
     end
 
+    get '/conversations/:id' do |id|
+      @conversation = Conversation.find id
+      @conversation.update_attributes :read => true
+
+      erb :'conversations/show'
+    end
+
     # Go and rape Twitter for the user's latest tweets,
     # and return a lovely HTML snippet for us
     post '/rape' do
@@ -120,37 +127,42 @@ module HoiPolloi
     # to that conversation, or if we don't, we create a new conversation for it.
     def import_into_database tweets
       tweets.each do |tweet|
-        unless tweet.in_reply_to_status_id.nil?
+        begin
+          unless tweet.in_reply_to_status_id.nil?
 
-          # I've been battling DataMapper all night. I know this is horrible, and that Satan will
-          # banish me to Hell for this. Oh! I can smell the burning flesh, the intoxicating smoke,
-          # the reams and reams of Dan Brown novels. But alas, my hands are tied.
-          #
-          # conversation = Conversation.first :limit => 1, :tweets => { :tweet_id => tweet.in_reply_to_status_id }
-          conversation_tweet = Tweet.find_by_tweet_id(tweet.in_reply_to_status_id, :include => [ :conversation ])
-          
-          unless conversation_tweet.nil?
+            # I've been battling DataMapper all night. I know this is horrible, and that Satan will
+            # banish me to Hell for this. Oh! I can smell the burning flesh, the intoxicating smoke,
+            # the reams and reams of Dan Brown novels. But alas, my hands are tied.
+            #
+            # conversation = Conversation.first :limit => 1, :tweets => { :tweet_id => tweet.in_reply_to_status_id }
+            conversation_tweet = Tweet.find_by_tweet_id(tweet.in_reply_to_status_id, :include => [ :conversation ])
+            
+            unless conversation_tweet.nil?
 
-            # If we have any existing tweets, we have a conversation!
-            conversation = conversation_tweet.conversation
-            conversation.update_attributes :read => 0
+              # If we have any existing tweets, we have a conversation!
+              conversation = conversation_tweet.conversation
+            else
+
+              # Otherwise, we need to create a new conversation
+              conversation = Conversation.create! :read => 0, :user => current_user, :start_tweet_id => tweet.id
+            end
           else
 
-            # Otherwise, we need to create a new conversation
-            conversation = Conversation.create! :read => 0, :user => current_user
+            conversation = Conversation.create! :read => 0, :user => current_user, :start_tweet_id => tweet.id
           end
-        else
-
-          conversation = Conversation.create! :read => 0, :user => current_user
-        end
         
-        # Import the tweet into the database.
-        Tweet.create! :tweet_id => tweet.id,
-                      :from_name => tweet.user.screen_name,
-                      :user => current_user,
-                      :conversation_id => conversation.id,
-                      :text => tweet.text,
-                      :tweeted_at => tweet.created_at
+          # Import the tweet into the database.
+          Tweet.create! :tweet_id => tweet.id,
+                        :from_name => tweet.user.screen_name,
+                        :user => current_user,
+                        :conversation_id => conversation.id,
+                        :text => tweet.text,
+                        :tweeted_at => tweet.created_at
+        rescue ActiveRecord::RecordNotUnique => e 
+          # ignore the duplicate
+        else
+          conversation.update_attributes :read => 0
+        end
       end
     end
   end
