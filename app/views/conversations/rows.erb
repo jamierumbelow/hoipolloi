@@ -1,0 +1,6 @@
+<% for conversation in @conversations %>
+	<tr<% unless conversation.read %> class="unread"<% end %>>
+		<td><%= conversation.mentions.first %></td>
+		<td><%= conversation.mentions.last.text %></td>
+	</tr>
+<% end %>

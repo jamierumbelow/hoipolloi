@@ -1,9 +1,13 @@
-require 'data_mapper'
+require 'dm-core'
+require 'dm-migrations'
 
+DataMapper::Logger.new(STDOUT, :debug)
 DataMapper.setup(:default, ENV['DATABASE_URL'] || "mysql://root:root@localhost/hoipolloi_development")
 
 class User
   include DataMapper::Resource
+
+  has n, :mentions
 
   property :id,         Serial
   property :uid,        String
@@ -26,11 +30,13 @@ class Mention
   include DataMapper::Resource
 
   belongs_to :conversation
+  belongs_to :user
 
-  property :id,         Serial
-  property :tweet_id,   String
-  property :text,       Text
-  property :tweeted_at, DateTime
+  property :id,                    Serial
+  property :tweet_id,              String
+  property :in_reply_to_status_id, String
+  property :text,                  Text
+  property :tweeted_at,            DateTime
 end
 
 DataMapper.finalize

@@ -7,8 +7,7 @@ module TwitterRaper
     end
 
     def rape
-      current_tweet = User.all :uid => @context.current_user.id
-      mentions = @context.mentions
+      
     end
   end
 end

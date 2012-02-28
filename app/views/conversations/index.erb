@@ -1,0 +1,16 @@
+<div class="span8 offset2">
+	<h2>@<%= session[:username] %></h2>
+
+	<p id="conversations-spinner"><img src="/images/loading-spinner.gif" /> We're just grabbing your tweets for you now.</p>
+
+	<table class="table-bordered" id="conversations-table">
+		<thead>
+			<tr>
+				<th>@</th>
+				<th>Message</th>
+			</tr>
+		</thead>
+
+		<tbody id="conversations" class="load-from-server" data-remote-url="<%= url '/rape' %>"></tbody>
+	</table>
+</div>
