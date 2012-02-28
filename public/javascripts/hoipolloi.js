@@ -18,12 +18,20 @@ $(function(){
 		});
 	}
 
-	/**
-	 * Auto-update the desirables on page load
-	 */
-	if ($('.load-from-server').length > 0)
+	function autoRefreshDesirables()
 	{
-		// $('.load-from-server').each(refreshDesirables);
+		setTimeout(function(){
+			refreshDesirables();
+			autoRefreshDesirables();
+		}, 120000);
+	}
+
+	/**
+	 * Auto-refresh the desirables
+	 */
+	if ($('body').attr('data-auto-refresh'))
+	{
+		autoRefreshDesirables();
 	}
 
 	/**

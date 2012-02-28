@@ -15,7 +15,7 @@
 	<script type="text/javascript" src="http://use.typekit.com/gcb4pqg.js"></script>
 	<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
 </head>
-<body>
+<body<% unless @auto_refresh.nil? %> data-auto-refresh="true"<% end %>>
 	<% unless @current_user.nil? %>
 		<div class="navbar">
 			<div class="navbar-inner">
