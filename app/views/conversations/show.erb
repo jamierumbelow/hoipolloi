@@ -8,7 +8,7 @@
 					<textarea name="reply"><%= @conversation.from_names_at(@current_user.nickname) %> </textarea>
 				</p>
 				<p class="author me">
-					<img src="http://www.educatorlife.com/mathteacherlife/wp-content/themes/StandardTheme_20/uploads/default_gravatar.jpg" width="75" height="75" />
+					<img src="https://api.twitter.com/1/users/profile_image/<%= @current_user.nickname %>?size=bigger" width="75" height="75" />
 					<strong>@<%= @current_user.nickname %></strong>
 				</p>
 
@@ -21,7 +21,7 @@
 		<% for tweet in @conversation.tweets.order('tweeted_at DESC') %>
 			<div class="tweet">
 				<p class="author <% if tweet.from_name == @current_user.nickname %>me<% else %>them<% end %>">
-					<img src="http://www.educatorlife.com/mathteacherlife/wp-content/themes/StandardTheme_20/uploads/default_gravatar.jpg" width="75" height="75" />
+					<img src="https://api.twitter.com/1/users/profile_image/<%= tweet.from_name %>?size=bigger" width="75" height="75" />
 					<strong>@<%= tweet.from_name %></strong>
 				</p>
 
