@@ -49,3 +49,5 @@ header h1 {
 #tweets .new-tweet .buttons { clear: both; text-align: left; }
 
 #conversation_tagline { font-family: "atrament-web"; font-size: 2em; text-transform: uppercase; font-weight: normal; margin-top: -30px; margin-bottom: 50px; letter-spacing: 2px; }
+
+#login .btn { font-family: "atrament-web"; font-size: 3em; padding: 20px; margin-top: 50px; letter-spacing: 2px; }
