@@ -19,7 +19,11 @@ class Conversation < ActiveRecord::Base
                   .limit(10)
                   .includes(:tweets)
                   .where("tweets.from_name != '#{current_user}'")
-                  .where("conversations.created_at > '#{newer_than || '0000-00-00 00:00:00'}'")
+      
+      if newer_than
+        scope = scope.where("conversations.created_at > '#{newer_than || '0000-00-00 00:00:00'}'")
+      end
+
       scope.all
     end
 
