@@ -71,6 +71,16 @@ module HoiPolloi
       erb :'conversations/index'
     end
 
+    post '/conversations/update' do
+      if params[:mark_as_read]
+        Conversation.update_all({ :read => true }, { :id => params[:conversations] })
+      elsif params[:mark_as_unread]
+        Conversation.update_all({ :read => false }, { :id => params[:conversations] })
+      end
+
+      redirect '/conversations'
+    end
+
     get '/conversations/:id' do |id|
       @conversation = Conversation.find id
       @conversation.update_attributes :read => true
