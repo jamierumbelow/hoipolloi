@@ -13,13 +13,13 @@ class Conversation < ActiveRecord::Base
   class << self
     # There's gotta be a better way of doing this...
     def recent_conversations limit, current_user, newer_than = false
-      scope = self.order('(SELECT tweeted_at FROM tweets WHERE (conversations.id=tweets.conversation_id) ORDER BY tweeted_at DESC) DESC')
+      scope = self.order('(SELECT tweeted_at FROM tweets WHERE (conversations.id=tweets.conversation_id) ORDER BY tweeted_at DESC LIMIT 1) DESC')
                   .limit(10)
                   .includes(:tweets)
                   .where("tweets.from_name != '#{current_user}'")
       
       if newer_than
-        scope = scope.where("conversations.created_at > '#{newer_than}'")
+        scope = scope.where("conversations.created_at > '#{newer_than || '0000-00-00 00:00:00'}'")
       end
 
       scope.all
