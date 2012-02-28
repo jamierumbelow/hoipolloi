@@ -8,11 +8,12 @@ require 'omniauth'
 require 'omniauth-twitter'
 
 require './app/models'
-require './lib/twitter_raper'
 require './config/twitter'
 
 module HoiPolloi
   class App < Sinatra::Base
+    attr_accessor :current_user
+
     set :root, Proc.new { File.expand_path File.join(File.dirname(__FILE__), '../') }
     set :views, Proc.new { File.join root, 'app/views' }
 
@@ -67,24 +68,70 @@ module HoiPolloi
       erb :'conversations/index'
     end
 
-    # go and rape Twitter for the user's latest tweets,
+    # Go and rape Twitter for the user's latest tweets,
     # and return a lovely HTML snippet for us
-    get '/rape' do
-      current_user = User.get session[:user_id]
-      current_tweet = current_user.mentions( :order => [ :tweeted_at.desc ], :limit => 1 ).last || false
+    post '/rape' do
+      
+      # First, we grab the current user from the session
+      @current_user = User.get session[:user_id]
+      p @current_user.tweets.length
+      # Next up, we're going to grab the user's recent tweets and import them into
+      # the database. We're doing this so that we can create conversations around them.
+      if current_user.tweets.length > 0
+        p "DON'T GET TWEETS SINCE #{current_user.tweets.last.tweet_id}"
+        my_tweets = Twitter.user_timeline :count => 200, :since_id => current_user.tweets.last.tweet_id
+      else
+        my_tweets = Twitter.user_timeline :count => 200
+      end
+      
+      # We now want to loop through our tweets and bring them into the database.
+      import_into_database my_tweets
+
+      # Now, let's do the same sort of thing for our mentions!
+      current_tweet = current_user.tweets( :order => [ :tweeted_at.desc ], :limit => 1 ).last || false
 
       if current_tweet
         mentions = Twitter.mentions :count => 200, :since_id => current_tweet.tweet_id
       else
         mentions = Twitter.mentions :count => 200
       end
-      
-      mentions.each do |mention|
-        unless mention.in_reply_to_status_id.nil?
-          conversation = Conversation.first :limit => 1, :mentions => { :tweet_id => mention.in_reply_to_status_id }
 
-          unless conversation.nil?
+      import_into_database mentions
+
+      # Finally, grab our 'conversing' conversations, that is, our conversations
+      # with > 1 tweet in them.
+      @conversations = Conversation.find_by_sql "SELECT conversations.*
+                                                 FROM conversations
+                                                 JOIN tweets ON tweets.conversation_id = conversations.id 
+                                                 GROUP BY conversations.id
+                                                 HAVING COUNT(tweets.id) > 1"
+
+      # ...and render out our view :)
+      erb :'conversations/rows', :layout => false
+    end
+
+    private
+
+    # Import our tweets into the database. But be clever about it, yeah? Check that
+    # if we're replying to a tweet and we have that tweet in our database, we add it
+    # to that conversation, or if we don't, we create a new conversation for it.
+    def import_into_database tweets
+      tweets.each do |tweet|
+        unless tweet.in_reply_to_status_id.nil?
+
+          # I've been battling DataMapper all night. I know this is horrible, and that Satan will
+          # banish me to Hell for this. Oh! I can smell the burning flesh, the intoxicating smoke,
+          # the reams and reams of Dan Brown novels. But alas, my hands are tied.
+          #
+          # conversation = Conversation.first :limit => 1, :tweets => { :tweet_id => tweet.in_reply_to_status_id }
+          conversation_tweets = Tweet.first :tweet_id => tweet.in_reply_to_status_id
+          
+          # If we have any existing tweets, we have a conversation!
+          unless conversation_tweets.nil?
+            conversation = conversation_tweets.conversation
             conversation.update! :read => 0
+
+          # Otherwise, we need to create a new conversation
           else
             conversation = Conversation.create! :read => 0, :user => current_user
           end
@@ -92,16 +139,14 @@ module HoiPolloi
           conversation = Conversation.create! :read => 0, :user => current_user
         end
         
-        Mention.create! :tweet_id => mention.id,
-                        :user => current_user,
-                        :conversation_id => conversation.id,
-                        :text => mention.text,
-                        :tweeted_at => mention.created_at
+        # Import the tweet into the database.
+        Tweet.create! :tweet_id => tweet.id,
+                      :from_name => tweet.user.screen_name,
+                      :user => current_user,
+                      :conversation_id => conversation.id,
+                      :text => tweet.text,
+                      :tweeted_at => tweet.created_at
       end
-
-      @conversations = Conversation.all
-
-      erb :'conversations/rows', :layout => false
     end
   end
 end

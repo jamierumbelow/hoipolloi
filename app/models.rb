@@ -1,5 +1,6 @@
 require 'dm-core'
 require 'dm-migrations'
+require 'dm-ar-finders'
 
 DataMapper::Logger.new(STDOUT, :debug)
 DataMapper.setup(:default, ENV['DATABASE_URL'] || "mysql://root:root@localhost/hoipolloi_development")
@@ -7,7 +8,7 @@ DataMapper.setup(:default, ENV['DATABASE_URL'] || "mysql://root:root@localhost/h
 class User
   include DataMapper::Resource
 
-  has n, :mentions
+  has n, :tweets
 
   property :id,         Serial
   property :uid,        String
@@ -20,19 +21,20 @@ class Conversation
   include DataMapper::Resource
 
   belongs_to :user
-  has n, :mentions
+  has n, :tweets
 
   property :id,   Serial
   property :read, Boolean
 end
 
-class Mention
+class Tweet
   include DataMapper::Resource
 
   belongs_to :conversation
   belongs_to :user
 
   property :id,                    Serial
+  property :from_name,             String
   property :tweet_id,              String
   property :in_reply_to_status_id, String
   property :text,                  Text

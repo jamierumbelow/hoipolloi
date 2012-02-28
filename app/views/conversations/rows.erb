@@ -1,6 +1,6 @@
 <% for conversation in @conversations %>
 	<tr<% unless conversation.read %> class="unread"<% end %>>
-		<td><%= conversation.mentions.first %></td>
-		<td><%= conversation.mentions.last.text %></td>
+		<td><%= conversation.tweets.first(:from_name.not => @current_user.nickname) %></td>
+		<td><%= conversation.tweets.last.text %></td>
 	</tr>
 <% end %>
