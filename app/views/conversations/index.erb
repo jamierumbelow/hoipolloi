@@ -1,18 +1,23 @@
-<div class="span8 offset2">
-	<h2>@<%= session[:username] %> <small><a href="#" id="refresh-desirables">(refresh)</a></small></h2>
+<form action="<%= url '/conversations/check' %>" method="post">
+	<div class="span8 offset2">
+		<table class="table table-striped table-bordered" id="conversations-table">
+			<thead>
+				<tr>
+					<th><input type="checkbox" id="check_all" /></th>
+					<th>From</th>
+					<th>Message</th>
+				</tr>
+			</thead>
 
-	<p id="conversations-spinner"><img src="/images/loading-spinner.gif" /> We're just grabbing your tweets for you now.</p>
+			<tbody id="conversations" class="load-from-server" data-remote-url="<%= url '/rape' %>">
+				<%= erb :'conversations/rows' %>
+			</tbody>
+		</table>
 
-	<table class="table-bordered" id="conversations-table">
-		<thead>
-			<tr>
-				<th>@</th>
-				<th>Message</th>
-			</tr>
-		</thead>
+		<p>
+			<input class="btn pull-left" type="submit" name="mark_as_read" value="Mark as read" />
+		</p>
 
-		<tbody id="conversations" class="load-from-server" data-remote-url="<%= url '/rape' %>">
-			<%= erb :'conversations/rows' %>
-		</tbody>
-	</table>
-</div>
+		<br />
+	</div>
+</form>
