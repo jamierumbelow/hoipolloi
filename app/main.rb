@@ -66,12 +66,7 @@ module HoiPolloi
     end
 
     get '/conversations' do
-      @conversations = Conversation.find_by_sql "SELECT conversations.*
-                                                 FROM conversations
-                                                 JOIN tweets ON tweets.conversation_id = conversations.id
-                                                 GROUP BY conversations.id
-                                                 HAVING COUNT(tweets.id) > 1
-                                                 ORDER BY tweets.tweeted_at DESC"
+      @conversations = Conversation.recent_conversations 10, @current_user.nickname
 
       erb :'conversations/index'
     end
@@ -98,33 +93,31 @@ module HoiPolloi
       
       # First, we're going to grab the user's recent tweets and import them into
       # the database. We're doing this so that we can create conversations around them.
-      if current_user.tweets.count > 0
-        my_tweets = Twitter.user_timeline :count => 200, :since_id => current_user.tweets.order('tweeted_at DESC').first.tweet_id
+      current_tweet = current_user.tweets.order('tweeted_at DESC').where('from_name' => current_user.nickname).first
+      current_conversation = Conversation.most_recent_conversation
+
+      unless current_tweet.nil?
+        my_tweets = Twitter.user_timeline :since_id => current_tweet.tweet_id
       else
-        my_tweets = Twitter.user_timeline :count => 200
+        my_tweets = Twitter.user_timeline 
       end
 
       # We now want to loop through our tweets and bring them into the database.
       import_into_database my_tweets
 
       # Now, let's do the same sort of thing for our mentions!
-      current_tweet = current_user.tweets.order('tweeted_at DESC').first
+      current_mention = current_user.tweets.order('tweeted_at DESC').where("from_name != '#{current_user.nickname}'").first
 
-      if current_tweet.nil?
-        mentions = Twitter.mentions :count => 200, :since_id => current_tweet.tweet_id
+      unless current_mention.nil?
+        mentions = Twitter.mentions :since_id => current_mention.tweet_id
       else
-        mentions = Twitter.mentions :count => 200
+        mentions = Twitter.mentions 
       end
 
       import_into_database mentions
 
-      # Finally, grab our 'conversing' conversations, that is, our conversations
-      # with > 1 tweet in them.
-      @conversations = Conversation.find_by_sql "SELECT conversations.*
-                                                 FROM conversations
-                                                 JOIN tweets ON tweets.conversation_id = conversations.id 
-                                                 GROUP BY conversations.id
-                                                 HAVING COUNT(tweets.id) > 1"
+      # Finally, grab our recent conversations
+      @conversations = Conversation.recent_conversations 10, @current_user.nickname
 
       # ...and render out our view :)
       erb :'conversations/rows', :layout => false

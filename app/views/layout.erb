@@ -10,12 +10,19 @@
 
 	<script type="text/javascript" src="/javascripts/jquery-1.7.1.min.js"></script>
 	<script type="text/javascript" src="/javascripts/hoipolloi.js"></script>
+
+	<script type="text/javascript" src="http://use.typekit.com/gcb4pqg.js"></script>
+	<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
 </head>
 <body>
-	<header>
-		<h1>Hoi Polloi!</h1>
-	</header>
+	<div class="container">
+		<div class="row">
+			<header class="span8 offset2">
+				<h1>Hoi Polloi!</h1>
+			</header>
+		</div>
 
-	<%= yield %>
+		<%= yield %>
+	</div>
 </body>
 </html>
