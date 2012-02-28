@@ -30,6 +30,8 @@ module HoiPolloi
           config.oauth_token = session[:access_token]
           config.oauth_token_secret = session[:access_token_secret]
         end
+
+        @current_user = User.find session[:user_id]
       end
     end
 
@@ -64,6 +66,12 @@ module HoiPolloi
     end
 
     get '/conversations' do
+      @conversations = Conversation.find_by_sql "SELECT conversations.*
+                                                 FROM conversations
+                                                 JOIN tweets ON tweets.conversation_id = conversations.id 
+                                                 GROUP BY conversations.id
+                                                 HAVING COUNT(tweets.id) > 1"
+
       erb :'conversations/index'
     end
 
@@ -71,10 +79,7 @@ module HoiPolloi
     # and return a lovely HTML snippet for us
     post '/rape' do
       
-      # First, we grab the current user from the session
-      @current_user = User.find session[:user_id]
-
-      # Next up, we're going to grab the user's recent tweets and import them into
+      # First, we're going to grab the user's recent tweets and import them into
       # the database. We're doing this so that we can create conversations around them.
       if current_user.tweets.count > 0
         my_tweets = Twitter.user_timeline :count => 200, :since_id => current_user.tweets.order('tweeted_at DESC').first.tweet_id

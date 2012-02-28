@@ -11,6 +11,8 @@
 			</tr>
 		</thead>
 
-		<tbody id="conversations" class="load-from-server" data-remote-url="<%= url '/rape' %>"></tbody>
+		<tbody id="conversations" class="load-from-server" data-remote-url="<%= url '/rape' %>">
+			<%= erb :'conversations/rows' %>
+		</tbody>
 	</table>
 </div>

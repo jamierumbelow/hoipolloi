@@ -8,7 +8,7 @@ $(function(){
 
 			$.post($div.attr('data-remote-url'), {}, function(data){
 				$('#conversations-spinner').hide();
-				$div.html(data);
+				$div.prepend(data);
 				$('#conversations-table').slideDown();
 			});
 		});
