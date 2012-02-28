@@ -25,10 +25,11 @@
 					<strong>@<%= tweet.from_name %></strong>
 				</p>
 
-				<p class="text triangle-border <% if tweet.from_name == @current_user.nickname %>right<% else %>left<% end %>"><%= tweet.text %></p>
+				<p class="text triangle-border <% if tweet.from_name == @current_user.nickname %>right<% else %>left<% end %>"><%= tweet.output_text %></p>
 			</div>
 		<% end %>
 	</div>
 </div>
 
 <link rel="stylesheet" type="text/css" href="/stylesheets/speechbubbles.css" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/emoji-iphone.css" />
