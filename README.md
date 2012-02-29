@@ -1,4 +1,5 @@
-# Hoi Polloi!
+![Hoi Polloi!](http://f.cl.ly/items/2n0V3N3h0J3k2c3K1F1h/Screen%20Shot%202012-02-29%20at%2000.01.46.png)
+
 ## Treat your tweets like an inbox
 
 [Hoi Polloi!](http://hoipolloi.heroku.com) is a small Twitter client that regularly reads in your tweets and mentions and generates conversations. It allows you to keep track of what mentions you've replied to and what conversations you're having.
