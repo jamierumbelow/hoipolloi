@@ -16,7 +16,11 @@
 
 * Entire back-catalogue of tweets
 * Searching
+* Starred tweets (maybe linking in with favourites?)
 * Pagination
+* Exposing the tweets as an SMTP server for use with a real mail client
+* API
+* Tags/categories
 
 ### The Tech
 
