@@ -18,7 +18,8 @@ class Conversation < ActiveRecord::Base
       scope = self.order('(SELECT tweeted_at FROM tweets WHERE (conversations.id=tweets.conversation_id) ORDER BY tweeted_at DESC LIMIT 1) DESC')
                   .limit(10)
                   .includes(:tweets)
-                  .where("tweets.from_name != '#{current_user}'")
+                  .where("tweets.from_name != '#{current_user.nickname}'")
+                  .where(user_id: current_user)
       
       if newer_than
         scope = scope.where("conversations.created_at > '#{newer_than || '0000-00-00 00:00:00'}'")
@@ -27,8 +28,8 @@ class Conversation < ActiveRecord::Base
       scope.all
     end
 
-    def most_recent_conversation
-      self.order('created_at DESC').limit(1).first
+    def most_recent_conversation current_user
+      self.order('created_at DESC').where(user_id: current_user).limit(1).first
     end
   end
 

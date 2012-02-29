@@ -78,7 +78,7 @@ module HoiPolloi
     ## Conversations
 
     get '/conversations' do
-      @conversations = Conversation.recent_conversations 10, @current_user.nickname
+      @conversations = Conversation.recent_conversations 10, @current_user
 
       erb :'conversations/index'
     end
@@ -119,7 +119,7 @@ module HoiPolloi
       # First, we're going to grab the user's recent tweets and import them into
       # the database. We're doing this so that we can create conversations around them.
       current_tweet = current_user.tweets.order('tweeted_at DESC').where('from_name' => current_user.nickname).first
-      current_conversation = Conversation.most_recent_conversation
+      current_conversation = Conversation.most_recent_conversation @current_user
 
       unless current_tweet.nil?
         my_tweets = Twitter.user_timeline :since_id => current_tweet.tweet_id
@@ -142,7 +142,7 @@ module HoiPolloi
       import_into_database mentions
 
       # Finally, grab our recent conversations
-      @conversations = Conversation.recent_conversations 10, @current_user.nickname
+      @conversations = Conversation.recent_conversations 10, @current_user
 
       # ...and render out our view :)
       erb :'conversations/rows', :layout => false
