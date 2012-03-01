@@ -18,7 +18,7 @@ class Conversation < ActiveRecord::Base
       scope = self.order('(SELECT tweeted_at FROM tweets WHERE (conversations.id=tweets.conversation_id) ORDER BY tweeted_at DESC LIMIT 1) DESC')
                   .limit(10)
                   .includes(:tweets)
-                  .where("tweets.from_name != '#{current_user.nickname}'")
+                  .where("tweets.from_name != '#{current_user}'")
                   .where(user_id: current_user)
       
       if newer_than
