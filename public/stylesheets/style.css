@@ -16,6 +16,9 @@ header h1 {
 	width: 100%;
 }
 
+#conversations .selected-column { width: 2px; padding: 0px; }
+#conversations .selected-column.selected { background: #08C; }
+#conversations .selected-column + td { border-left: 0; }
 #conversations .unread td { font-weight: bold; }
 
 .navbar-inner { padding: 5px;}

@@ -62,4 +62,72 @@ $(function(){
 
 		$(this).parents('form').find('input[type="checkbox"]').attr('checked', checked);
 	});
+
+	/**
+	 * Navigation
+	 */
+
+	function navNextConversation()
+	{
+		if ($('.selected').length > 0)
+		{
+			if ($('.selected').parent().next().length > 0)
+			{
+				$('.selected').removeClass('selected')
+							  .parent()
+							  .next()
+							  .find('td:first')
+							  .addClass('selected');
+			}
+			else
+			{
+				$('.selected').removeClass('selected')
+							  .parents('#conversations')
+							  .find('tr:first td:first')
+							  .addClass('selected');
+			}
+		}
+		else
+		{
+			$('#conversations tr:first td:first').addClass('selected');
+		}
+	}
+
+	function navPrevConversation()
+	{
+		if ($('.selected').length > 0)
+		{
+			if ($('.selected').parent().prev().length > 0)
+			{
+				$('.selected').removeClass('selected')
+							  .parent()
+							  .prev()
+							  .find('td:first')
+							  .addClass('selected');
+			}
+			else
+			{
+				$('.selected').removeClass('selected')
+							  .parents('#conversations')
+							  .find('tr:last td:first')
+							  .addClass('selected');
+			}
+		}
+		else
+		{
+			$('#conversations tr:last td:first').addClass('selected');
+		}
+	}
+
+	function navOpenConversation()
+	{
+		window.location.href = HoiPolloi.BASE + 'conversations/' + $('.selected').parent().attr('data-conversation-id');
+	}
+
+	/**
+	 * Keyboard shortcuts
+	 */
+	key('k', function(){ navNextConversation(); });
+	key('j', function(){ navPrevConversation(); });
+	key('enter, o', function(){ navOpenConversation(); });
 });

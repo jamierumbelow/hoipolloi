@@ -1,5 +1,6 @@
 <% for conversation in @conversations %>
-	<tr<% unless conversation.read %> class="unread"<% end %>>
+	<tr<% unless conversation.read %> class="unread"<% end %> data-conversation-id="<%= conversation.id %>">
+		<td class="selected-column"></td>
 		<td><input type="checkbox" name="conversations[]" value="<%= conversation.id %>" /></td>
 		<td><%= conversation.from_names @current_user.nickname %></td>
 		<td><a href="<%= url "/conversations/#{conversation.id}" %>"><%= conversation.snippet %></a></td>
