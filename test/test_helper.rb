@@ -1,5 +1,0 @@
-require 'bundler/setup'
-require 'minitest/autorun'
-require 'twitter_raper'
-require 'mocha'
-require './app/main.rb'

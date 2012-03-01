@@ -14,6 +14,9 @@ module HoiPolloi
   class App < Sinatra::Base
     attr_accessor :current_user
 
+    ## --------------------------------------------------------------
+    ## Essential Sinatra setup
+
     set :root, Proc.new { File.expand_path File.join(File.dirname(__FILE__), '../') }
     set :views, Proc.new { File.join root, 'app/views' }
 
@@ -21,6 +24,9 @@ module HoiPolloi
     use OmniAuth::Builder do
       provider :twitter, HoiPolloi.configuration[:consumer_key], HoiPolloi.configuration[:consumer_secret]
     end
+
+    ## --------------------------------------------------------------
+    ## Authentication
 
     before do
       unless session[:user_id].nil?
@@ -57,6 +63,9 @@ module HoiPolloi
       redirect '/'
     end
 
+    ## --------------------------------------------------------------
+    ## Misc.
+
     get '/' do
       if session[:user_id].nil?
         erb :index
@@ -65,10 +74,13 @@ module HoiPolloi
       end
     end
 
+    ## --------------------------------------------------------------
+    ## Conversations
+
     get '/conversations' do
       @conversations = Conversation.recent_conversations 10, @current_user.nickname
       @auto_refresh = true
-
+      
       erb :'conversations/index'
     end
 
@@ -98,6 +110,9 @@ module HoiPolloi
       redirect "/conversations/#{id}"
     end
 
+    ## --------------------------------------------------------------
+    ## Tweet raping!
+
     # Go and rape Twitter for the user's latest tweets,
     # and return a lovely HTML snippet for us
     post '/rape' do
@@ -105,7 +120,7 @@ module HoiPolloi
       # First, we're going to grab the user's recent tweets and import them into
       # the database. We're doing this so that we can create conversations around them.
       current_tweet = current_user.tweets.order('tweeted_at DESC').where('from_name' => current_user.nickname).first
-      current_conversation = Conversation.most_recent_conversation
+      current_conversation = Conversation.most_recent_conversation @current_user
 
       unless current_tweet.nil?
         my_tweets = Twitter.user_timeline :since_id => current_tweet.tweet_id
@@ -128,7 +143,7 @@ module HoiPolloi
       import_into_database mentions
 
       # Finally, grab our recent conversations
-      @conversations = Conversation.recent_conversations 10, @current_user.nickname
+      @conversations = Conversation.recent_conversations 10, @current_user
 
       # ...and render out our view :)
       erb :'conversations/rows', :layout => false
