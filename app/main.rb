@@ -78,7 +78,7 @@ module HoiPolloi
     ## Conversations
 
     get '/conversations' do
-      @conversations = Conversation.recent_conversations 10, @current_user.nickname
+      @conversations = Conversation.recent_conversations 10, @current_user
       @auto_refresh = true
       
       erb :'conversations/index'
