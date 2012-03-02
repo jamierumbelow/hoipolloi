@@ -127,7 +127,7 @@ $(function(){
 	/**
 	 * Keyboard shortcuts
 	 */
-	key('k', function(){ navNextConversation(); });
-	key('j', function(){ navPrevConversation(); });
+	key('j', function(){ navNextConversation(); });
+	key('k', function(){ navPrevConversation(); });
 	key('enter, o', function(){ navOpenConversation(); });
 });
