@@ -21,7 +21,7 @@ $(function(){
 	function autoRefreshDesirables()
 	{
 		setTimeout(function(){
-			refreshDesirables();
+			$('#refresh-desirables').click();
 			autoRefreshDesirables();
 		}, 120000);
 	}
