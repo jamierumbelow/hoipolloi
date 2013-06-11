@@ -1,0 +1,14 @@
+<%= form_tag read_conversations_path, method: 'post' do %>
+  <div class="span8 offset2">
+    <table class="table table-striped table-bordered" id="conversations-table">
+      <tbody id="conversations" class="load-from-server" data-remote-url="<%= rape_url %>">
+        <%= render @conversations %>
+      </tbody>
+    </table>
+
+    <p>
+      <input class="btn pull-left" type="submit" name="mark_as_read" value="Mark as read" />
+      <input class="btn pull-left" type="submit" name="mark_as_unread" value="Mark as unread" style="margin-left:5px" />
+    </p>
+  </div>
+<% end %>

@@ -1,0 +1,56 @@
+body {
+  text-align: center;
+}
+
+header {
+  height: 200px;
+  margin: 25px 0;
+}
+
+header h1 {
+  font-size: 160px;
+  font-family: "ff-prater-block-web";
+  line-height: 1;
+  text-align: center;
+  margin-left: 15px;
+  width: 100%;
+}
+
+#conversations .selected-column { width: 2px; padding: 0px; }
+#conversations .selected-column.selected { background: #08C; }
+#conversations .selected-column + td { border-left: 0; }
+#conversations .unread td { font-weight: bold; }
+
+.navbar-inner { padding: 5px;}
+.navbar-inner .container { width: 750px; padding-left: 40px; }
+
+#progress-indicator { margin-top: 11px; width: 20px; height: 20px; }
+#progress-indicator.icon-refresh { background: image-url('loading-spinner.gif') no-repeat; }
+
+#tweets .tweet { padding: 25px; border-top: 1px solid #CCC; overflow: auto; }
+
+#tweets .tweet p.author, #tweets .new-tweet p.author { text-align: center; width: 100px; float: left; }
+#tweets .tweet p.author img, #tweets .new-tweet p.author img { display: block; margin: 0 auto; }
+#tweets .tweet p.author strong, #tweets .new-tweet p.author strong { display: block; text-align: center; }
+#tweets .tweet p.me, #tweets .new-tweet p.me { float: right; }
+#tweets .tweet p.them { float: left; }
+
+#tweets .tweet p.text { width: 550px; float: left; text-align: left; border-color: #999; font-size: 1.2em; font-family: "ff-cocon-web-pro"; }
+#tweets .tweet p.text.right { border-color: #3A87AD; }
+#tweets .tweet p.text::before { border-color: transparent #999; }
+#tweets .tweet p.text.right::before { border-color: transparent #3A87AD; }
+
+#tweets .new-tweet { overflow: auto; }
+#tweets .new-tweet p.triangle-border { padding: 5px; width: 550px; margin-right: 0; float: left; margin-bottom: 10px; }
+#tweets .new-tweet p.author { float: left; margin: 10px 25px 10px 50px; }
+#tweets .new-tweet textarea { width: 99%; height: 50px; border: 0; font-size: 1.2em; font-family: "ff-cocon-web-pro"; box-shadow: 0; -webkit-box-shadow: 0; resize: none; outline: none; -webkit-appearance: none; }
+#tweets .new-tweet textarea:focus {
+  outline-color: transparent;
+  outline-style: none;
+}
+
+#tweets .new-tweet .buttons { clear: both; text-align: left; }
+
+#conversation_tagline { font-family: "atrament-web"; font-size: 2em; text-transform: uppercase; font-weight: normal; margin-top: -30px; margin-bottom: 50px; letter-spacing: 2px; }
+
+#login .btn { font-family: "atrament-web"; font-size: 3em; padding: 20px; margin-top: 50px; letter-spacing: 2px; }

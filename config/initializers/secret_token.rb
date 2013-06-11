@@ -9,8 +9,4 @@
 
 # Make sure your secret_key_base is kept private
 # if you're sharing your code publicly.
-Hoipolloi::Application.config.secret_key_base = if Rails.env.development? || Rails.env.test?
-  ('x' * 30) # meets minimum requirement of 30 chars long
-else
-  ENV.fetch('SECRET_TOKEN')
-end
+Hoipolloi::Application.config.secret_key_base = ENV.fetch('SECRET_TOKEN')
