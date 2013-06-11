@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head>
+  <title>Hoi Polloi!</title>
+
+  <%= stylesheet_link_tag    "application", media: "all" %>
+  <%= javascript_include_tag "application" %>
+  <%= csrf_meta_tags %>
+
+  <script type="text/javascript" src="http://use.typekit.com/gcb4pqg.js"></script>
+  <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+
+  <script type="text/javascript">
+    var HoiPolloi = {
+      BASE: '<%= url_for "/" %>'
+    };
+  </script>
+</head>
+<body<% if auto_refresh %> data-auto-refresh="true"<% end %>>
+  <% if current_user %>
+    <div class="navbar">
+      <div class="navbar-inner">
+          <div class="container">
+              <%= link_to "@#{current_user.nickname}", conversations_path, class: 'brand' %>
+              <ul class="nav pull-right">
+                <li><a href="#" id="refresh-desirables">Refresh</a></li>
+                <li><i id="progress-indicator" class="icon-white icon-ok-sign"></i></li>
+                <li>
+                  <%= link_to 'Logout', '/auth/logout', method: :delete %>
+                </li>
+              </ul>
+          </div>
+        </div>
+    </div>
+  <% else %>
+    <p style="margin-top:200px"></p>
+  <% end %>
+
+  <div class="container">
+    <div class="row">
+      <header class="span8 offset2">
+        <h1>Hoi Polloi!</h1>
+      </header>
+    </div>
+
+    <%= yield %>
+  </div>
+</body>
+</html>

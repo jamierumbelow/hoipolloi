@@ -1,0 +1,6 @@
+<tr<% unless conversation.read %> class="unread"<% end %> data-conversation-id="<%= conversation.id %>">
+  <td class="selected-column"></td>
+  <td><input type="checkbox" name="conversations[]" value="<%= conversation.id %>" /></td>
+  <td><%= conversation.from_names current_user.nickname %></td>
+  <td><%= link_to conversation.snippet, conversation_path(conversation) %></td>
+</tr>

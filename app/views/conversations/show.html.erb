@@ -1,0 +1,32 @@
+<div class="span8 offset2">
+  <h3 id="conversation_tagline">Conversation with <%= @conversation.from_names(current_user.nickname) %></h3>
+
+  <div id="tweets">
+    <div class="new-tweet">
+      <%= form_for [:reply, @conversation], method: 'post' do %>
+        <p class="triangle-border right">
+          <textarea name="reply"><%= @conversation.from_names_at(current_user.nickname) %> </textarea>
+        </p>
+        <p class="author me">
+          <img src="https://api.twitter.com/1/users/profile_image/<%= current_user.nickname %>?size=bigger" width="75" height="75" />
+          <strong>@<%= current_user.nickname %></strong>
+        </p>
+
+        <p class="buttons">
+          <input type="submit" value="Reply" class="btn" />
+        </p>
+      <% end %>
+    </div>
+
+    <% for tweet in @conversation.tweets.order('tweeted_at DESC') %>
+      <div class="tweet">
+        <p class="author <% if tweet.from_name == current_user.nickname %>me<% else %>them<% end %>">
+          <img src="https://api.twitter.com/1/users/profile_image/<%= tweet.from_name %>?size=bigger" width="75" height="75" />
+          <strong>@<%= tweet.from_name %></strong>
+        </p>
+
+        <p class="text triangle-border <% if tweet.from_name == current_user.nickname %>right<% else %>left<% end %>"><%= tweet.output_text %></p>
+      </div>
+    <% end %>
+  </div>
+</div>
