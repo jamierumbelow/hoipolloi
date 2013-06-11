@@ -1,19 +1,4 @@
-source :rubygems
+source 'https://rubygems.org'
+ruby '1.9.3'
 
-gem 'minitest'
-gem 'turn'
-gem 'mocha'
-
-gem 'sinatra'
-gem 'shotgun'
-
-gem 'twitter'
-
-gem 'omniauth'
-gem 'omniauth-twitter'
-
-gem 'activerecord'
-gem 'sinatra-activerecord'
-gem 'sqlite3'
-gem 'pg'
-gem 'mysql'
+gem 'rails', '4.0.0.rc1'
